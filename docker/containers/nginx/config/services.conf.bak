@@ -1,0 +1,103 @@
+location /sickbeard {
+    proxy_pass    http://localhost:8081/sickbeard;
+    include       proxy-control.conf;
+    proxy_set_header  Host localhost:8081;
+    proxy_redirect    default;
+}
+#Change web_root in config.ini to /sickbeard (Sickbeard should be stopped while editing file), also for post processing add web_root to autoProcessTV.cfg
+#web_root = /sickbeard
+
+location /sabnzbd {
+    proxy_pass    http://localhost:8082/sabnzbd;
+    include       proxy-control.conf;
+	proxy_set_header  Host localhost:8082;
+    proxy_redirect    default;
+}
+
+location /couchpotato {
+    proxy_pass    http://localhost:5050/couchpotato;
+    include       proxy-control.conf;
+    proxy_set_header  Host localhost:5050;
+    proxy_redirect    default;
+#See http://couchpotato.tenderapp.com/kb/tips/reverse-proxy
+#URL base needs to be adjusted and make sure couchpotato is restarted once the change is in place
+
+}
+
+location /transmission {
+    proxy_pass    http://localhost:9091/transmission;
+    include       proxy-control.conf;
+}
+
+location /headphones {
+    proxy_pass    http://localhost:8181/headphones;
+    include       proxy-control.conf;
+}
+#You will need to make sure headphones is not running, and then modify its config.ini file in order to set:
+#http_root = /headphones
+
+location /deluge {
+    # Ssl Headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; always";
+    add_header X-Content-Type-Options nosniff;
+
+    proxy_pass http://localhost:8112/;
+    proxy_set_header X-Deluge-Base "/deluge/";
+    include proxy-control.conf;
+}
+
+location ~ ^/nzbget($|./*)  {
+    rewrite       ^/nzbget/(.*) /$1 break;
+    proxy_pass    http://127.0.0.1:6789;
+    include       proxy-control.conf;
+}
+location ~ ^/nzbget$ {
+    return 302    $scheme://$host$request_uri/;
+}
+
+location /syncthing/ {
+    proxy_pass    http://127.0.0.1:8384/;
+    include       proxy-control.conf;
+}
+
+location /sonarr {
+    proxy_pass    http://127.0.0.1:8989/sonarr;
+    include       proxy-control.conf;
+    proxy_set_header  Host localhost:8989;
+}
+
+location /muximux {
+    rewrite /muximux/(.*) /$1 break;
+    proxy_pass http://localhost:8083/;
+    include proxy-control.conf;
+
+    location ~ \.php$ {
+        proxy_pass http://localhost:8083;
+    }
+}
+
+location /glances {
+    rewrite /glances/(.*) /$1 break;
+    proxy_pass http://localhost:61208/;
+    include proxy-control.conf;
+}
+
+location /jackett/ {
+    rewrite /jackett/(.*) /$1 break;
+    proxy_bind $server_addr;
+    proxy_pass http://127.0.0.1:9117;
+}
+
+location /influxdb/ {
+    proxy_pass http://localhost:8084/;
+    include proxy-control.conf;
+}
+
+ location /influx-api/ {
+    proxy_pass http://localhost:8086/;
+    include proxy-control.conf;
+}
+
+location /grafana/ {
+    proxy_pass http://localhost:3000/;
+}
