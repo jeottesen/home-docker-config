@@ -35,11 +35,11 @@ Each user has their own network in docker. This allows the containers that the u
 
 For example the `nginx` and `syncthing` dockers are able to work properly without any ports open to the network. In the users nginx container folder under `docker/containers/nginx/config/upstream/other.conf` file I set the upstream to the syncthing docker. Since I name all my docker containers with the user preceding the app name the hostname of the syncthing container is jeremy-syncthing. Syncthings web interface operates on port 8384. so I set the configuration accordingly. Because of the reverse proxy I don't have to open port 8384.
 Here is an example of how it looks:. </br>
-`
+```
 upstream syncthing {
     server jeremy-syncthing:8384;
 }
-`
+```
 
 Each users nginx docker uses this to provide access to the docker application through reverse proxy. Using this I can minimize the open ports on the server.
 
