@@ -1,23 +1,14 @@
+# The plex library will not load on a mergerfs pool with direcetio turned on
+# it breaks sqlite3 mmap. Plex Version 1.7.2.3878 on 6/7/2017
 docker create \
     --name $USER-plex \
     --restart="always" \
-    -p 32400:32400/tcp \
-    -p 3005:3005/tcp \
-    -p 8324:8324/tcp \
-    -p 32469:32469/tcp \
-    -p 1900:1900/udp \
-    -p 32410:32410/udp \
-    -p 32412:32412/udp \
-    -p 32413:32413/udp \
-    -p 32414:32414/udp \
+    --net=host \
     -e TZ=America/Denver \
-    -e PLEX_UID=$(id -u) \
-    -e PLEX_GID=$(id -g) \
-    -e ALLOWED_NETWORKS="192.168.1.0/24" \
-    -e PLEX_CLAIM="CLAIM-VUQCYPCS9FISWGVE1QOT" \
-    -e ADVERTISE_IP="http://192.168.1.34:32400/" \
-    -h mediaserver \
+    -e PUID=$(id -u) \
+    -e PGID=$(id -g) \
+    -e VERSION=latest \
     -v ~/docker/containers/plex/config/:/config \
     -v /media/Media/:/data/ \
-    -v ~/docker/containers/plex/transcode/:/transcode \
-    plexinc/pms-docker
+    -v ~/transcode/:/transcode \
+    linuxserver/plex 
