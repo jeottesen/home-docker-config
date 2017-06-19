@@ -10,5 +10,5 @@ docker create \
     -e VERSION=latest \
     -v ~/docker/containers/plex/config/:/config \
     -v /media/Media/:/data/ \
-    -v ~/transcode/:/transcode \
+    -v ~/docker/containers/plex/transcode/:/transcode \
     linuxserver/plex 
